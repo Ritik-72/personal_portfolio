@@ -7,7 +7,7 @@ import { ThemeCard } from '../components/ThemeCard';
 import { cn } from '../utils/cn';
 
 export const Settings = ({ onClose }: { onClose: () => void }) => {
-  const { mode, colorTheme, backgroundTheme, favorites, recentlyUsed } = useTheme();
+  const { mode, colorTheme, backgroundTheme, favorites, recentlyUsed, timeThemeEnabled, setTimeThemeEnabled } = useTheme();
   const [search, setSearch] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'favorites' | 'recent'>('all');
 
@@ -103,6 +103,35 @@ export const Settings = ({ onClose }: { onClose: () => void }) => {
 
         {/* Scroll Area */}
         <div className="flex-1 overflow-y-auto p-8 pt-6" data-lenis-prevent>
+          {/* Dynamic Time-Based Theme Banner */}
+          <div className="mb-8 p-6 rounded-[2rem] relative overflow-hidden bg-gradient-to-r from-amber-500/15 via-orange-500/15 to-indigo-500/15 border border-white/10 backdrop-blur-md shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-gradient-to-tr from-amber-500 via-orange-500 to-indigo-600 rounded-2xl text-white shadow-lg shadow-orange-500/20">
+                <Clock className="animate-pulse-slow" size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold font-outfit">Dynamic Time-Based Theme</h3>
+                <p className="text-xs text-foreground/75 dark:text-foreground/60 leading-relaxed mt-1">
+                  Theme adapts automatically: <span className="text-amber-500 dark:text-amber-400 font-semibold">Morning (Soft Warm)</span> → <span className="text-orange-500 dark:text-orange-400 font-semibold">Evening (Sunset Gradient)</span> → <span className="text-indigo-500 dark:text-indigo-400 font-semibold">Night (Galaxy Neon)</span>
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setTimeThemeEnabled(!timeThemeEnabled)}
+              className={cn(
+                "relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-300 ease-in-out focus:outline-none",
+                timeThemeEnabled ? "bg-primary-500" : "bg-black/20 dark:bg-white/10"
+              )}
+            >
+              <span
+                className={cn(
+                  "pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg ring-0 transition duration-300 ease-in-out",
+                  timeThemeEnabled ? "translate-x-5" : "translate-x-0"
+                )}
+              />
+            </button>
+          </div>
+
           <AnimatePresence mode="popLayout">
             {activeTab === 'all' ? (
               <div className="space-y-12">

@@ -19,6 +19,7 @@ export const themesConfig: ThemeConfig[] = [
   { id: 'system', name: 'System Default', category: 'appearance', mode: 'system', colorTheme: 'violet', backgroundTheme: 'none' },
 
   // Modern Themes
+  { id: 'morning-warm', name: 'Soft Warm Morning', category: 'modern', colorTheme: 'amber', backgroundTheme: 'mesh', gradient: 'from-amber-400 to-orange-400', mode: 'light' },
   { id: 'ocean-blue', name: 'Ocean Blue', category: 'modern', colorTheme: 'blue', backgroundTheme: 'mesh', gradient: 'from-blue-600 to-cyan-400' },
   { id: 'aurora', name: 'Aurora', category: 'modern', colorTheme: 'emerald', backgroundTheme: 'mesh', gradient: 'from-emerald-500 to-teal-400' },
   { id: 'sunset', name: 'Sunset Gradient', category: 'modern', colorTheme: 'orange', backgroundTheme: 'mesh', gradient: 'from-orange-500 to-rose-400' },

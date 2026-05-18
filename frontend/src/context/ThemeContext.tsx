@@ -14,6 +14,8 @@ interface ThemeContextType {
   recentlyUsed: string[];
   applyTheme: (theme: ThemeConfig) => void;
   toggleMode: () => void;
+  timeThemeEnabled: boolean;
+  setTimeThemeEnabled: (enabled: boolean) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -24,6 +26,48 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [backgroundTheme, setBackgroundTheme] = useState<BackgroundTheme>(() => (localStorage.getItem('backgroundTheme') as BackgroundTheme) || 'none');
   const [favorites, setFavorites] = useState<string[]>(() => JSON.parse(localStorage.getItem('themeFavorites') || '[]'));
   const [recentlyUsed, setRecentlyUsed] = useState<string[]>(() => JSON.parse(localStorage.getItem('themeRecent') || '[]'));
+  const [timeThemeEnabled, setTimeThemeEnabledState] = useState<boolean>(() => {
+    return localStorage.getItem('timeThemeEnabled') === 'true';
+  });
+
+  const setTimeThemeEnabled = (enabled: boolean) => {
+    setTimeThemeEnabledState(enabled);
+    localStorage.setItem('timeThemeEnabled', String(enabled));
+  };
+
+  const applyTimeBasedTheme = () => {
+    const hour = new Date().getHours();
+    let themeId = 'morning-warm';
+    if (hour >= 5 && hour < 17) {
+      themeId = 'morning-warm';
+    } else if (hour >= 17 && hour < 20) {
+      themeId = 'sunset';
+    } else {
+      themeId = 'midnight';
+    }
+
+    const targetTheme = themesConfig.find(t => t.id === themeId);
+    if (targetTheme) {
+      if (targetTheme.mode) setMode(targetTheme.mode);
+      setColorTheme(targetTheme.colorTheme);
+      setBackgroundTheme(targetTheme.backgroundTheme);
+    }
+  };
+
+  // Dynamic Time-Based Theme Effect
+  useEffect(() => {
+    if (!timeThemeEnabled) return;
+
+    // Apply immediately
+    applyTimeBasedTheme();
+
+    // Check time every minute
+    const timer = setInterval(() => {
+      applyTimeBasedTheme();
+    }, 60000);
+
+    return () => clearInterval(timer);
+  }, [timeThemeEnabled]);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -62,11 +106,29 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
   };
 
-  const toggleMode = () => {
+  // User manual overrides disable auto time-based theme
+  const handleSetMode = (newMode: Mode) => {
+    setTimeThemeEnabled(false);
+    setMode(newMode);
+  };
+
+  const handleSetColorTheme = (newColorTheme: ColorTheme) => {
+    setTimeThemeEnabled(false);
+    setColorTheme(newColorTheme);
+  };
+
+  const handleSetBackgroundTheme = (newBackgroundTheme: BackgroundTheme) => {
+    setTimeThemeEnabled(false);
+    setBackgroundTheme(newBackgroundTheme);
+  };
+
+  const handleToggleMode = () => {
+    setTimeThemeEnabled(false);
     setMode(prev => (prev === 'light' ? 'dark' : 'light'));
   };
 
   const applyTheme = (theme: ThemeConfig) => {
+    setTimeThemeEnabled(false);
     if (theme.mode) setMode(theme.mode);
     setColorTheme(theme.colorTheme);
     setBackgroundTheme(theme.backgroundTheme);
@@ -80,11 +142,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   return (
     <ThemeContext.Provider value={{
-      mode, setMode,
-      colorTheme, setColorTheme,
-      backgroundTheme, setBackgroundTheme,
+      mode, setMode: handleSetMode,
+      colorTheme, setColorTheme: handleSetColorTheme,
+      backgroundTheme, setBackgroundTheme: handleSetBackgroundTheme,
       favorites, toggleFavorite,
-      recentlyUsed, applyTheme, toggleMode
+      recentlyUsed, applyTheme, toggleMode: handleToggleMode,
+      timeThemeEnabled, setTimeThemeEnabled
     }}>
       {children}
     </ThemeContext.Provider>
