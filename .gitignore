@@ -1,0 +1,42 @@
+# Portable Node directories and zip archives
+node.zip
+node2.zip
+node_v22.zip
+node_portable/
+node_v22/
+
+# Backend virtual environment and cache
+backend/venv/
+backend/__pycache__/
+backend/.env
+**/__pycache__/
+
+# Frontend dependency and build directories
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+
+# Local env files
+*.local
+.env
+.env.*
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

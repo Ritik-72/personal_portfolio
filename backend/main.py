@@ -1,0 +1,134 @@
+from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, EmailStr
+from typing import List, Optional
+import os
+from dotenv import load_dotenv
+import google.generativeai as genai
+
+# Load environment variables
+load_dotenv()
+
+# Configure Google Gemini
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel('gemini-2.0-flash')
+
+app = FastAPI(title="Portfolio Backend API", version="1.0.0")
+
+# CORS Configuration
+# Allow all origins for development; in production, restrict to frontend domain
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Models
+class ContactForm(BaseModel):
+    name: str
+    email: EmailStr
+    subject: str
+    message: str
+
+class AnalyticsData(BaseModel):
+    page: str
+    timestamp: str
+    device: Optional[str] = "unknown"
+
+class AIChatRequest(BaseModel):
+    message: str
+    mode: str = "general" # general, resume, projects
+    history: Optional[List[dict]] = []
+
+AYUSMAN_BIO = """
+You are the personal AI assistant of Ayusman, a highly skilled Python Developer.
+Your goal is to represent Ayusman professionally and help visitors understand his expertise, projects, and background.
+
+Ayusman's Details:
+- Current Role: Python Developer at Bipros.
+- Major Project: Ama Sathi WhatsApp Chatbot for Odisha Government services (FastAPI, PostgreSQL, WhatsApp API).
+- Education: 
+    - Master of Computer Applications (MCA) from IGIT Sarang (2023-2025).
+    - B.Sc. Computer Science Honours from Dhenkanal Autonomous College (2020-2023).
+- Technical Skills: 
+    - Frontend: React.js, JavaScript, Tailwind CSS, Framer Motion, Redux.
+    - Backend: Python, FastAPI, Java, Go, REST APIs, GraphQL.
+    - Database: PostgreSQL, MongoDB, Redis.
+- Stats: 1+ Years Experience, 10+ Projects, 15K+ Happy Clients.
+- Location: Joranda, Dhenkanal, Odisha, 759014.
+- Email: goodmorningritik@gmail.com
+- Intersts: Gamer, Cricketer.
+
+Guidelines:
+- Be professional, friendly, and concise.
+- If asked about projects, recommend 'Ama Sathi', 'AI Market Intelligence', or 'EcoSphere Dashboard'.
+- If you don't know an answer, politely ask the visitor to contact Ayusman directly via the contact form.
+"""
+
+# Endpoints
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the Portfolio Backend API"}
+
+@app.post("/contact")
+async def contact_me(form: ContactForm, background_tasks: BackgroundTasks):
+    # Log the contact request
+    print(f"Received message from {form.name} ({form.email}): {form.subject}")
+    
+    # In a real scenario, you'd send an email here.
+    # background_tasks.add_task(send_email_notification, form)
+    
+    return {"status": "success", "message": "Thank you! Your message has been received."}
+
+@app.get("/analytics")
+async def get_analytics():
+    # Placeholder for analytics data
+    return {
+        "views": 1240,
+        "unique_visitors": 850,
+        "contact_requests": 15
+    }
+
+@app.post("/track")
+async def track_view(data: AnalyticsData):
+    # Placeholder for tracking logic
+    print(f"Tracking view for page: {data.page} at {data.timestamp}")
+    return {"status": "tracked"}
+
+@app.post("/ai/chat")
+@app.post("/api/chat")
+async def ai_chat(request: AIChatRequest):
+    try:
+        # Prepare context based on mode
+        system_prompt = AYUSMAN_BIO
+        if request.mode == "resume":
+            system_prompt += "\nFocus specifically on Ayusman's educational background and professional experience."
+        elif request.mode == "projects":
+            system_prompt += "\nFocus on recommending and explaining Ayusman's technical projects."
+
+        # Start chat with history
+        chat = model.start_chat(history=[])
+        
+        # We send the system prompt as a preliminary context if it's the first message
+        # For simplicity in this implementation, we prepend it to the current message
+        full_prompt = f"{system_prompt}\n\nUser Message: {request.message}"
+        
+        response = chat.send_message(full_prompt)
+        return {"response": response.text}
+    except Exception as e:
+        print(f"AI Error: {str(e)}")
+        raise HTTPException(status_code=500, detail="AI Assistant is currently unavailable.")
+
+# Mock function for email sending
+async def send_email_notification(form: ContactForm):
+    # This is where you would integrate SMTP or an email service provider
+    # Example using environment variables for credentials:
+    # smtp_user = os.getenv("SMTP_USER")
+    # smtp_pass = os.getenv("SMTP_PASS")
+    pass
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
