@@ -101,6 +101,25 @@ async def track_view(data: AnalyticsData):
 @app.post("/api/chat")
 async def ai_chat(request: AIChatRequest):
     try:
+        msg_lower = request.message.lower().strip()
+        
+        # Intercept common greetings
+        greetings = ["hi", "hii", "hello", "hey", "good morning", "good afternoon", "good evening", "yo", "greetings"]
+        is_greeting = False
+        for g in greetings:
+            if msg_lower == g or msg_lower.startswith(g + " ") or msg_lower.startswith(g + "!") or msg_lower.startswith(g + ","):
+                is_greeting = True
+                break
+                
+        if is_greeting:
+            greeting_msg = (
+                "Hello! While the Gemini AI service is currently experiencing high demand, here is a quick overview:\n\n"
+                "Ayusman is a Python Developer specialized in FastAPI, PostgreSQL, and React.js. "
+                "He built the official 'Ama Sathi' WhatsApp Chatbot for Odisha Government services!\n\n"
+                "Ask me about his **Skills**, **Projects**, **Education**, or **Contact details** and I will answer immediately!"
+            )
+            return {"response": greeting_msg}
+
         # Prepare context based on mode
         system_prompt = AYUSMAN_BIO
         if request.mode == "resume":
@@ -119,7 +138,59 @@ async def ai_chat(request: AIChatRequest):
         return {"response": response.text}
     except Exception as e:
         print(f"AI Error: {str(e)}")
-        raise HTTPException(status_code=500, detail="AI Assistant is currently unavailable.")
+        print("Activating local smart fallback responder...")
+        
+        # Local keyword-matching smart fallback
+        msg_lower = request.message.lower()
+        
+        if "project" in msg_lower or "work" in msg_lower or "portfolio" in msg_lower:
+            fallback_response = (
+                "Here are some of Ayusman's standout projects:\n\n"
+                "🔹 **Ama Sathi**: A high-impact WhatsApp Chatbot built for the Odisha Government "
+                "enabling citizens to access government services. Tech: FastAPI, PostgreSQL, WhatsApp API.\n"
+                "🔹 **AI Market Intelligence**: An AI-powered dashboard offering real-time market data analysis.\n"
+                "🔹 **EcoSphere Dashboard**: An interactive environmental metrics tracker built with React and Tailwind CSS.\n\n"
+                "Which one would you like to know more about?"
+            )
+        elif "skill" in msg_lower or "tech" in msg_lower or "stack" in msg_lower or "languages" in msg_lower:
+            fallback_response = (
+                "Ayusman's technical expertise spans across frontend, backend, and databases:\n\n"
+                "💻 **Frontend**: React.js, JavaScript, Tailwind CSS, Framer Motion, Redux\n"
+                "⚙️ **Backend**: Python, FastAPI, Java, Go, REST APIs, GraphQL\n"
+                "🗄️ **Databases**: PostgreSQL, MongoDB, Redis\n\n"
+                "He specializes in crafting high-performance APIs and sleek, animated user interfaces!"
+            )
+        elif "contact" in msg_lower or "email" in msg_lower or "reach" in msg_lower or "hire" in msg_lower or "phone" in msg_lower:
+            fallback_response = (
+                "You can reach out to Ayusman directly through the following channels:\n\n"
+                "📧 **Email**: goodmorningritik@gmail.com\n"
+                "📍 **Location**: Joranda, Dhenkanal, Odisha, India\n\n"
+                "Alternatively, you can send him a message directly using the **Contact Form** on this website! He is currently open to new opportunities."
+            )
+        elif "education" in msg_lower or "college" in msg_lower or "mca" in msg_lower or "degree" in msg_lower or "study" in msg_lower:
+            fallback_response = (
+                "Ayusman has a solid academic background in Computer Science:\n\n"
+                "🎓 **Master of Computer Applications (MCA)**\n"
+                "   IGIT Sarang | 2023 - 2025\n\n"
+                "🎓 **B.Sc. Computer Science (Honours)**\n"
+                "   Dhenkanal Autonomous College | 2020 - 2023"
+            )
+        elif "about" in msg_lower or "who is" in msg_lower or "ayusman" in msg_lower or "bio" in msg_lower:
+            fallback_response = (
+                "Ayusman is a talented Python Developer currently working at **Bipros**.\n\n"
+                "With over **1+ years of experience** and **10+ completed projects**, he excels at bridging the gap "
+                "between complex backend logic and gorgeous, premium user interfaces. In his free time, he is an "
+                "avid gamer and cricketer!"
+            )
+        else:
+            fallback_response = (
+                "Hello! While the Gemini AI service is currently experiencing high demand, here is a quick overview:\n\n"
+                "Ayusman is a Python Developer specialized in FastAPI, PostgreSQL, and React.js. "
+                "He built the official 'Ama Sathi' WhatsApp Chatbot for Odisha Government services!\n\n"
+                "Ask me about his **Skills**, **Projects**, **Education**, or **Contact details** and I will answer immediately!"
+            )
+            
+        return {"response": fallback_response}
 
 # Mock function for email sending
 async def send_email_notification(form: ContactForm):

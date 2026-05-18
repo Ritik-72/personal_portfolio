@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { Database, Cloud, Terminal, Palette } from 'lucide-react';
+import { Database, Cloud, Terminal, Palette, Sparkles } from 'lucide-react';
+import { SkillOrbit } from './SkillOrbit';
 
 const skillCategories = [
   {
@@ -94,52 +95,73 @@ export const Skills = () => {
           </motion.p>
         </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2"
-        >
-          {skillCategories.map((category, index) => (
-            <motion.div
-              key={index}
-              variants={cardVariants}
-              whileHover={{ y: -10, scale: 1.02 }}
-              className="animated-border-container group"
-            >
-              <div className="glass-card h-full p-8 flex flex-col items-start relative">
-                {/* Gradient Glow */}
-                <div 
-                  className="card-glow" 
-                  style={{ background: `radial-gradient(circle at center, ${category.glowColor}, transparent 70%)` }}
-                />
-                
-                {/* Floating Icon Container */}
-                <div className={`mb-8 p-5 rounded-3xl bg-gradient-to-br ${category.color} shadow-lg shadow-black/20 group-hover:animate-float`}>
-                  <div className="text-white">
-                    {category.icon}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center px-2">
+          {/* Skill Categories Left Grid */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            {skillCategories.map((category, index) => (
+              <motion.div
+                key={index}
+                variants={cardVariants}
+                whileHover={{ y: -6, scale: 1.01 }}
+                className="animated-border-container group"
+              >
+                <div className="glass-card h-full p-6 flex flex-col items-start relative">
+                  {/* Gradient Glow */}
+                  <div 
+                    className="card-glow" 
+                    style={{ background: `radial-gradient(circle at center, ${category.glowColor}, transparent 70%)` }}
+                  />
+                  
+                  {/* Floating Icon Container */}
+                  <div className={`mb-6 p-4 rounded-2xl bg-gradient-to-br ${category.color} shadow-lg shadow-black/20 group-hover:animate-float`}>
+                    <div className="text-white">
+                      {category.icon}
+                    </div>
+                  </div>
+
+                  <h3 className="text-xl font-bold mb-4 font-outfit group-hover:text-primary-400 transition-colors">
+                    {category.title}
+                  </h3>
+                  
+                  <div className="flex flex-wrap gap-2 mt-auto">
+                    {category.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="px-3 py-1 rounded-lg bg-white/5 text-xs font-medium border border-white/10 group-hover:border-primary-500/30 group-hover:bg-primary-500/5 transition-all duration-300"
+                      >
+                        {skill}
+                      </span>
+                    ))}
                   </div>
                 </div>
+              </motion.div>
+            ))}
+          </motion.div>
 
-                <h3 className="text-2xl font-bold mb-6 font-outfit group-hover:text-primary-400 transition-colors">
-                  {category.title}
-                </h3>
-                
-                <div className="flex flex-wrap gap-2.5 mt-auto">
-                  {category.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="px-4 py-1.5 rounded-xl bg-white/5 text-sm font-medium border border-white/10 group-hover:border-primary-500/30 group-hover:bg-primary-500/5 transition-all duration-300"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+          {/* 3D Orbit Right column */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="lg:col-span-5 flex items-center justify-center relative bg-white/5 dark:bg-black/10 border border-white/5 rounded-[2.5rem] p-6 backdrop-blur-md shadow-2xl overflow-hidden min-h-[450px]"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -z-10 animate-pulse" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary-500/10 rounded-full blur-3xl -z-10 animate-pulse" />
+            
+            <div className="absolute top-4 left-6 flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-primary-400 font-bold font-outfit z-10 bg-primary-500/10 border border-primary-500/20 px-2.5 py-1 rounded-full">
+              <Sparkles size={10} className="animate-spin-slow text-primary-400" /> 3D Skill Core
+            </div>
+            
+            <SkillOrbit />
+          </motion.div>
+        </div>
       </div>
     </section>
   );

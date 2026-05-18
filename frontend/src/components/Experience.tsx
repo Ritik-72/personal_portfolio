@@ -1,5 +1,6 @@
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Briefcase, Calendar } from 'lucide-react';
+import { Briefcase, Calendar, Code, Award } from 'lucide-react';
 import { cn } from '../utils/cn';
 import Tilt from 'react-parallax-tilt';
 
@@ -247,6 +248,164 @@ const FloatingRings = ({ flip = false, top = '30%' }) => (
   </div>
 );
 
+/* ─── Mini Interactive Experience Orbit ───────────────────────────────────── */
+const MiniOrbit = ({ 
+  centerIcon, 
+  centerText, 
+  items, 
+  color, 
+  glowColor 
+}: { 
+  centerIcon: React.ReactNode; 
+  centerText: string; 
+  items: string[]; 
+  color: string; 
+  glowColor: string; 
+}) => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  // Distribute items across 2 rings
+  const ring1Items = items.slice(0, 2);
+  const ring2Items = items.slice(2);
+
+  return (
+    <div className="relative w-full h-[260px] flex items-center justify-center overflow-visible select-none my-6 md:my-0">
+      {/* 3D Orbit CSS scoped to this orbit */}
+      <style>{`
+        @keyframes mini-orbit-1 {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes mini-counter-1 {
+          from { transform: rotate(360deg) rotateX(-60deg) rotateY(-10deg); }
+          to { transform: rotate(0deg) rotateX(-60deg) rotateY(-10deg); }
+        }
+        @keyframes mini-orbit-2 {
+          from { transform: rotate(360deg); }
+          to { transform: rotate(0deg); }
+        }
+        @keyframes mini-counter-2 {
+          from { transform: rotate(0deg) rotateX(-65deg) rotateY(15deg); }
+          to { transform: rotate(360deg) rotateX(-65deg) rotateY(15deg); }
+        }
+      `}</style>
+
+      {/* Orbit area */}
+      <div 
+        className="relative w-[240px] h-[240px] flex items-center justify-center"
+        style={{ perspective: '800px', transformStyle: 'preserve-3d' }}
+      >
+        {/* Core Center */}
+        <div 
+          className={cn(
+            "absolute w-16 h-16 rounded-full bg-gradient-to-tr p-[2px] z-10 flex items-center justify-center transition-all duration-300 shadow-lg",
+            color
+          )}
+          style={{ boxShadow: `0 0 20px ${glowColor}` }}
+        >
+          <div className="w-full h-full rounded-full bg-black/90 flex flex-col items-center justify-center overflow-hidden border border-white/10 text-center relative group p-1">
+            {centerIcon}
+            <span className="text-[7px] uppercase tracking-widest text-white/50 font-black font-outfit mt-0.5">{centerText}</span>
+          </div>
+        </div>
+
+        {/* Ambient background glow */}
+        <div 
+          className="absolute w-[120px] h-[120px] rounded-full blur-[50px] -z-10 opacity-30"
+          style={{ backgroundColor: glowColor }}
+        />
+
+        {/* Ring 1 - diameter 130px */}
+        <div 
+          className="absolute border border-dashed border-white/10 rounded-full w-[130px] h-[130px]"
+          style={{ transform: 'rotateX(60deg) rotateY(10deg)', transformStyle: 'preserve-3d', pointerEvents: 'none' }}
+        >
+          {ring1Items.map((item, idx) => {
+            const index = idx;
+            const isHovered = hoveredIndex === index;
+            return (
+              <div 
+                key={item}
+                className="absolute w-full h-full top-0 left-0"
+                style={{
+                  transformStyle: 'preserve-3d',
+                  animation: `mini-orbit-1 ${10 + idx * 2}s linear infinite`,
+                  animationDelay: `${idx * -5}s`,
+                  animationPlayState: isHovered ? 'paused' : 'running'
+                }}
+              >
+                <div 
+                  className={cn(
+                    "absolute w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-cyan-500 flex items-center justify-center border border-white/20 shadow-md text-[8px] font-black text-white font-outfit cursor-pointer transition-transform duration-300 pointer-events-auto",
+                    isHovered ? "scale-125 shadow-lg animate-pulse" : ""
+                  )}
+                  style={{
+                    top: '50%',
+                    left: '100%',
+                    transform: 'translate(-50%, -50%)',
+                    animation: `mini-counter-1 ${10 + idx * 2}s linear infinite`,
+                    animationDelay: `${idx * -5}s`,
+                    animationPlayState: isHovered ? 'paused' : 'running',
+                    boxShadow: isHovered ? `0 0 12px ${glowColor}` : undefined
+                  }}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  {item}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Ring 2 - diameter 210px */}
+        <div 
+          className="absolute border border-dashed border-white/10 rounded-full w-[210px] h-[210px]"
+          style={{ transform: 'rotateX(65deg) rotateY(-15deg)', transformStyle: 'preserve-3d', pointerEvents: 'none' }}
+        >
+          {ring2Items.map((item, idx) => {
+            const index = idx + 2;
+            const isHovered = hoveredIndex === index;
+            return (
+              <div 
+                key={item}
+                className="absolute w-full h-full top-0 left-0"
+                style={{
+                  transformStyle: 'preserve-3d',
+                  animation: `mini-orbit-2 ${14 + idx * 2}s linear infinite`,
+                  animationDelay: `${idx * -7}s`,
+                  animationPlayState: isHovered ? 'paused' : 'running'
+                }}
+              >
+                <div 
+                  className={cn(
+                    "absolute w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center border border-white/20 shadow-md text-[8px] font-black text-white font-outfit cursor-pointer transition-transform duration-300 pointer-events-auto",
+                    isHovered ? "scale-125 shadow-lg animate-pulse" : ""
+                  )}
+                  style={{
+                    top: '50%',
+                    left: '100%',
+                    transform: 'translate(-50%, -50%)',
+                    animation: `mini-counter-2 ${14 + idx * 2}s linear infinite`,
+                    animationDelay: `${idx * -7}s`,
+                    animationPlayState: isHovered ? 'paused' : 'running',
+                    boxShadow: isHovered ? `0 0 12px ${glowColor}` : undefined
+                  }}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  {item}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
 /* ─── Main Section ────────────────────────────────────────────────────────── */
 export const Experience = () => {
   return (
@@ -311,6 +470,35 @@ export const Experience = () => {
                 "absolute top-0 w-4 h-4 rounded-full bg-primary-500 border-4 border-background z-10",
                 index % 2 === 0 ? "md:right-[-9px] right-auto left-[-9px] md:left-auto" : "left-[-9px]"
               )} />
+
+              {/* Interactive side orbits for 2nd and 3rd card on large screens */}
+              {index === 1 && (
+                <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-[-100%] w-full pr-16 text-right z-0 pointer-events-none">
+                  <div className="inline-block pointer-events-auto">
+                    <MiniOrbit 
+                      centerIcon={<Award className="w-5 h-5 text-primary-400" />}
+                      centerText="MCA Core"
+                      items={["Java", "DBMS", "Web", "Cloud"]}
+                      color="from-primary-500 to-indigo-500"
+                      glowColor="rgba(139, 92, 246, 0.3)"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {index === 2 && (
+                <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-[100%] w-full pl-16 text-left z-0 pointer-events-none">
+                  <div className="inline-block pointer-events-auto">
+                    <MiniOrbit 
+                      centerIcon={<Code className="w-5 h-5 text-cyan-400 animate-pulse" />}
+                      centerText="B.Sc CS"
+                      items={["DSA", "C++", "OS", "HTML"]}
+                      color="from-cyan-400 to-blue-500"
+                      glowColor="rgba(34, 211, 238, 0.3)"
+                    />
+                  </div>
+                </div>
+              )}
 
               <Tilt
                 tiltMaxAngleX={5}

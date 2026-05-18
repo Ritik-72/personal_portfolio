@@ -20,6 +20,70 @@ export const AIChatPanel = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const suggestions = [
+    { label: "About Ayusman 👨‍💻", query: "Tell me about Ayusman" },
+    { label: "Show Projects 🚀", query: "Show projects" },
+    { label: "Skills? 💡", query: "Skills?" },
+    { label: "Contact Details 📞", query: "Contact details?" }
+  ];
+
+  const handleSuggestionClick = (query: string) => {
+    setInput('');
+    handleSend(query);
+  };
+
+  const renderMessageContent = (content: string) => {
+    // Escape HTML first to prevent basic injection
+    let html = content
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+
+    // Replace bold text: **text** -> <strong>text</strong>
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-foreground">$1</strong>');
+    
+    // Replace inline code: `code` -> font-mono code
+    html = html.replace(/`(.*?)`/g, '<code class="bg-black/20 dark:bg-white/10 px-1.5 py-0.5 rounded font-mono text-xs text-primary-400">$1</code>');
+
+    // Handle bullet points / lines
+    const lines = html.split('\n');
+    const processedLines = lines.map(line => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('🔹')) {
+        return `<div class="flex items-start gap-2 my-1"><span class="text-primary-500 shrink-0">🔹</span><span>${trimmed.substring(1).trim()}</span></div>`;
+      }
+      if (trimmed.startsWith('💻')) {
+        return `<div class="flex items-start gap-2 my-1"><span class="text-primary-500 shrink-0">💻</span><span>${trimmed.substring(2).trim()}</span></div>`;
+      }
+      if (trimmed.startsWith('⚙️')) {
+        return `<div class="flex items-start gap-2 my-1"><span class="text-primary-500 shrink-0">⚙️</span><span>${trimmed.substring(2).trim()}</span></div>`;
+      }
+      if (trimmed.startsWith('🗄️')) {
+        return `<div class="flex items-start gap-2 my-1"><span class="text-primary-500 shrink-0">🗄️</span><span>${trimmed.substring(2).trim()}</span></div>`;
+      }
+      if (trimmed.startsWith('📧')) {
+        return `<div class="flex items-start gap-2 my-1"><span class="text-primary-500 shrink-0">📧</span><span>${trimmed.substring(2).trim()}</span></div>`;
+      }
+      if (trimmed.startsWith('🎓')) {
+        return `<div class="flex items-start gap-2 my-1"><span class="text-primary-500 shrink-0">🎓</span><span>${trimmed.substring(2).trim()}</span></div>`;
+      }
+      if (trimmed.startsWith('📍')) {
+        return `<div class="flex items-start gap-2 my-1"><span class="text-primary-500 shrink-0">📍</span><span>${trimmed.substring(2).trim()}</span></div>`;
+      }
+      if (trimmed.startsWith('-') || trimmed.startsWith('*')) {
+        return `<div class="flex items-start gap-2 my-1"><span class="text-primary-500 shrink-0">•</span><span>${trimmed.substring(1).trim()}</span></div>`;
+      }
+      return trimmed === '' ? '<br/>' : `<p class="mb-1">${line}</p>`;
+    });
+
+    return (
+      <div 
+        className="space-y-1 text-sm leading-relaxed" 
+        dangerouslySetInnerHTML={{ __html: processedLines.join('') }} 
+      />
+    );
+  };
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -28,11 +92,14 @@ export const AIChatPanel = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+  const handleSend = async (customMessage?: string) => {
+    const textToSend = customMessage || input;
+    if (!textToSend.trim() || isLoading) return;
 
-    const userMessage = input.trim();
-    setInput('');
+    const userMessage = textToSend.trim();
+    if (!customMessage) {
+      setInput('');
+    }
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
 
@@ -129,30 +196,51 @@ export const AIChatPanel = () => {
             {/* Chat Area */}
             <div className="flex-1 overflow-y-auto p-6 space-y-4" data-lenis-prevent>
               {messages.map((msg, i) => (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  key={i}
-                  className={cn(
-                    "flex items-start gap-3",
-                    msg.role === 'user' ? "flex-row-reverse" : ""
+                <div key={i} className="space-y-4">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={cn(
+                      "flex items-start gap-3",
+                      msg.role === 'user' ? "flex-row-reverse" : ""
+                    )}
+                  >
+                    <div className={cn(
+                      "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
+                      msg.role === 'bot' ? "bg-primary-500 text-white" : "bg-white/10 text-primary-400 border border-white/10"
+                    )}>
+                      {msg.role === 'bot' ? <Bot size={16} /> : <User size={16} />}
+                    </div>
+                    <div className={cn(
+                      "max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed",
+                      msg.role === 'bot'
+                        ? "bg-white/5 border border-white/10 text-foreground/80 rounded-tl-none"
+                        : "bg-primary-500 text-white rounded-tr-none shadow-lg shadow-primary-500/20"
+                    )}>
+                      {msg.role === 'bot' ? renderMessageContent(msg.content) : msg.content}
+                    </div>
+                  </motion.div>
+
+                  {/* Suggestion Chips */}
+                  {i === 0 && messages.length === 1 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className="grid grid-cols-2 gap-2 pl-11 pr-2"
+                    >
+                      {suggestions.map((suggestion, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleSuggestionClick(suggestion.query)}
+                          className="p-3 text-left rounded-xl border border-white/5 bg-white/5 hover:bg-primary-500/10 hover:border-primary-500/30 transition-all text-xs text-foreground/75 hover:text-primary-400 flex items-center justify-between group active:scale-[0.98]"
+                        >
+                          <span>{suggestion.label}</span>
+                        </button>
+                      ))}
+                    </motion.div>
                   )}
-                >
-                  <div className={cn(
-                    "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
-                    msg.role === 'bot' ? "bg-primary-500 text-white" : "bg-white/10 text-primary-400 border border-white/10"
-                  )}>
-                    {msg.role === 'bot' ? <Bot size={16} /> : <User size={16} />}
-                  </div>
-                  <div className={cn(
-                    "max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed",
-                    msg.role === 'bot'
-                      ? "bg-white/5 border border-white/10 text-foreground/80 rounded-tl-none"
-                      : "bg-primary-500 text-white rounded-tr-none shadow-lg shadow-primary-500/20"
-                  )}>
-                    {msg.content}
-                  </div>
-                </motion.div>
+                </div>
               ))}
               {isLoading && (
                 <div className="flex items-start gap-3">
@@ -181,7 +269,7 @@ export const AIChatPanel = () => {
                   className="w-full pl-6 pr-12 py-4 rounded-2xl bg-white/5 border border-white/10 focus:border-primary-500 transition-all outline-none text-sm"
                 />
                 <button
-                  onClick={handleSend}
+                  onClick={() => handleSend()}
                   disabled={!input.trim() || isLoading}
                   className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-primary-500 text-white rounded-xl hover:scale-105 transition-all disabled:opacity-50 disabled:hover:scale-100"
                 >
