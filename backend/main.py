@@ -72,13 +72,40 @@ Guidelines:
 async def root():
     return {"message": "Welcome to the Portfolio Backend API"}
 
+# Background task to send data to Google Sheets Webhook
+async def save_to_google_sheets(form: ContactForm):
+    webhook_url = os.getenv("GOOGLE_SHEET_WEBHOOK_URL")
+    if not webhook_url:
+        print("Warning: GOOGLE_SHEET_WEBHOOK_URL not set in environment variables.")
+        return
+        
+    data = {
+        "name": form.name,
+        "email": form.email,
+        "subject": form.subject,
+        "message": form.message
+    }
+    
+    import urllib.request
+    import json
+    
+    req = urllib.request.Request(webhook_url, method="POST")
+    req.add_header('Content-Type', 'application/json')
+    jsondata = json.dumps(data).encode('utf-8')
+    
+    try:
+        urllib.request.urlopen(req, jsondata)
+        print("Successfully saved message to Google Sheets.")
+    except Exception as e:
+        print(f"Error saving to Google Sheets: {e}")
+
 @app.post("/contact")
 async def contact_me(form: ContactForm, background_tasks: BackgroundTasks):
-    # Log the contact request
+    # Log the contact request locally
     print(f"Received message from {form.name} ({form.email}): {form.subject}")
     
-    # In a real scenario, you'd send an email here.
-    # background_tasks.add_task(send_email_notification, form)
+    # Run the Google Sheets saving function in the background
+    background_tasks.add_task(save_to_google_sheets, form)
     
     return {"status": "success", "message": "Thank you! Your message has been received."}
 
