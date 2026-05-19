@@ -21,7 +21,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [mode, setMode] = useState<Mode>(() => (localStorage.getItem('mode') as Mode) || 'dark');
+  const [mode, setMode] = useState<Mode>(() => (localStorage.getItem('mode') as Mode) || 'light');
   const [colorTheme, setColorTheme] = useState<ColorTheme>(() => (localStorage.getItem('colorTheme') as ColorTheme) || 'violet');
   const [backgroundTheme, setBackgroundTheme] = useState<BackgroundTheme>(() => (localStorage.getItem('backgroundTheme') as BackgroundTheme) || 'none');
   const [favorites, setFavorites] = useState<string[]>(() => JSON.parse(localStorage.getItem('themeFavorites') || '[]'));

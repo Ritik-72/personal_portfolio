@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import Tilt from 'react-parallax-tilt';
-import { Github, Linkedin, Twitter, ArrowRight, Download, ChevronDown } from 'lucide-react';
+import { Github, Linkedin, Instagram, ArrowRight, Download, ChevronDown } from 'lucide-react';
 import { MagneticButton } from './MagneticButton';
 
 export const Hero = () => {
@@ -172,23 +172,25 @@ export const Hero = () => {
               </button>
             </MagneticButton>
             <MagneticButton>
-              <button className="btn-outline group">
+              <a href="/resume.pdf" download="Ayusman_Resume.pdf" className="btn-outline group flex items-center justify-center gap-2">
                 Resume
                 <Download size={18} className="group-hover:translate-y-1 transition-transform" />
-              </button>
+              </a>
             </MagneticButton>
           </div>
 
           <div className="flex items-center gap-6">
             {[
-              { icon: <Github size={20} />, href: "#" },
+              { icon: <Github size={20} />, href: "https://github.com/Ritik-72?tab=repositories" },
               { icon: <Linkedin size={20} />, href: "#" },
-              { icon: <Twitter size={20} />, href: "#" }
+              { icon: <Instagram size={20} />, href: "https://www.instagram.com/ayusman_nayak.0?igsh=MXNncmYweGFjMDM0eA==" }
             ].map((social, i) => (
               <MagneticButton key={i}>
                 <motion.a
                   whileHover={{ scale: 1.1, color: "var(--color-primary-500)" }}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-3 rounded-xl glass-adaptive transition-colors block"
                 >
                   {social.icon}

@@ -10,7 +10,7 @@ const experiences = [
     company: 'Bipros',
     period: 'MAY 2025 - Present',
     description:
-      'Currently working as a Python Developer on the Ama Sathi WhatsApp Chatbot project for Odisha government services. Building scalable backend APIs, chatbot workflows, and integrations using FastAPI, PostgreSQL, and WhatsApp APIs.',
+      'Currently working as a Python Developer on the Ama Sathi WhatsApp Chatbot project (Official No: 9437292000) for Odisha government services. Building scalable backend APIs, chatbot workflows, and integrations using FastAPI, PostgreSQL, and WhatsApp APIs.',
     highlights: [
       'FastAPI Backend Development',
       'WhatsApp Chatbot Integration',

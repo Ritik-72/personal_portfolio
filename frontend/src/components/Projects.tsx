@@ -7,8 +7,8 @@ import { cn } from '../utils/cn';
 const projects = [
   {
     title: 'Ama Sathi WhatsApp Chatbot',
-    description: 'An intelligent WhatsApp-based government service integration platform for the Odisha Government, providing seamless access to public services.',
-    image: '/src/assets/amasathi.jpg',
+    description: 'An intelligent WhatsApp-based government service integration platform for the Odisha Government, providing seamless access to public services. Official Chatbot No: 9437292000.',
+    image: '/amasathi.png',
     video: 'https://assets.mixkit.co/videos/preview/mixkit-digital-circuit-board-with-glowing-lines-34534-large.mp4',
     tech: ['FastAPI', 'Python', 'WhatsApp API', 'PostgreSQL'],
     github: 'https://github.com',
@@ -20,7 +20,7 @@ const projects = [
   {
     title: 'AI Market Intelligence',
     description: 'A comprehensive platform for analyzing market trends using neural networks and real-time data streaming.',
-    image: 'https://images.unsplash.com/photo-1611974715853-2b8ef9a4d846?auto=format&fit=crop&q=80&w=800',
+    image: '/ai_market.png',
     video: 'https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-a-network-of-data-nodes-34533-large.mp4',
     tech: ['React', 'Python', 'FastAPI', 'PyTorch'],
     github: 'https://github.com',
@@ -260,12 +260,16 @@ const ProjectCard = ({ project, onPreview }: { project: typeof projects[0], onPr
             <div className="flex items-center gap-4 mt-auto">
               <a
                 href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm font-medium hover:text-primary-500 transition-colors"
               >
                 <Github size={18} /> Source
               </a>
               <a
                 href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm font-medium hover:text-primary-500 transition-colors"
               >
                 <ExternalLink size={18} /> Live Demo

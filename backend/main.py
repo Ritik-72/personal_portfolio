@@ -113,10 +113,8 @@ async def ai_chat(request: AIChatRequest):
                 
         if is_greeting:
             greeting_msg = (
-                "Hello! While the Gemini AI service is currently experiencing high demand, here is a quick overview:\n\n"
-                "Ayusman is a Python Developer specialized in FastAPI, PostgreSQL, and React.js. "
-                "He built the official 'Ama Sathi' WhatsApp Chatbot for Odisha Government services!\n\n"
-                "Ask me about his **Skills**, **Projects**, **Education**, or **Contact details** and I will answer immediately!"
+                "Hello! I am the AI Assistant for Ayusman. How can I help you today?\n\n"
+                "You can ask me about his **Skills**, **Projects**, **Education**, or **Contact details**!"
             )
             return {"response": greeting_msg}
 
@@ -184,10 +182,10 @@ async def ai_chat(request: AIChatRequest):
             )
         else:
             fallback_response = (
-                "Hello! While the Gemini AI service is currently experiencing high demand, here is a quick overview:\n\n"
-                "Ayusman is a Python Developer specialized in FastAPI, PostgreSQL, and React.js. "
-                "He built the official 'Ama Sathi' WhatsApp Chatbot for Odisha Government services!\n\n"
-                "Ask me about his **Skills**, **Projects**, **Education**, or **Contact details** and I will answer immediately!"
+                "Hello! I am the AI Assistant for Ayusman. How can I help you today?\n\n"
+                "Ayusman is a professional Python Developer specialized in FastAPI, PostgreSQL, and React.js. "
+                "He recently built the official 'Ama Sathi' WhatsApp Chatbot for Odisha Government services.\n\n"
+                "You can ask me about his **Skills**, **Projects**, **Education**, or **Contact details**!"
             )
             
         return {"response": fallback_response}

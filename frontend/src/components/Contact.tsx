@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send, Mail, MapPin, CheckCircle2, AlertCircle, Phone } from 'lucide-react';
+import { API_BASE } from '../config/api';
 
 export const Contact = () => {
   const [formData, setFormData] = useState({
@@ -16,7 +17,7 @@ export const Contact = () => {
     setStatus('loading');
 
     try {
-      const response = await fetch('http://localhost:8000/contact', {
+      const response = await fetch(`${API_BASE}/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,15 +62,20 @@ export const Contact = () => {
                   <p className="text-foreground/60">goodmorningritik@gmail.com</p>
                 </div>
               </div>
-              <div className="flex items-center gap-6">
-                <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+              <a
+                href="https://maps.app.goo.gl/Kjw5DmyabvUgJyws5"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-6 group cursor-pointer"
+              >
+                <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300">
                   <MapPin size={24} />
                 </div>
                 <div>
                   <h4 className="font-bold font-outfit">Location</h4>
-                  <p className="text-foreground/60">Joranda,Dhenkanal,Odisha,759014</p>
+                  <p className="text-foreground/60 group-hover:text-cyan-400 transition-colors">Joranda, Dhenkanal, Odisha, 759014</p>
                 </div>
-              </div>
+              </a>
               <a
                 href="https://wa.me/918847865910"
                 target="_blank"

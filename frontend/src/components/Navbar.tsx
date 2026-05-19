@@ -92,7 +92,13 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
           {/* Social and Theme Actions */}
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-4 border-r border-white/10 pr-4">
-               <motion.a whileHover={{ y: -2 }} href="#" className="hover:text-primary-500 transition-colors">
+               <motion.a
+                 whileHover={{ y: -2 }}
+                 href="https://github.com/Ritik-72?tab=repositories"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 className="hover:text-primary-500 transition-colors"
+               >
                  <Github size={20} />
                </motion.a>
                <motion.a whileHover={{ y: -2 }} href="#" className="hover:text-primary-500 transition-colors">

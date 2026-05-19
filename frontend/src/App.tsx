@@ -43,12 +43,20 @@ function AppContent() {
         <Navbar theme={mode} toggleTheme={toggleMode} />
 
         {/* Settings Toggle Button */}
-        <button
+        <motion.button
+          whileHover={{ scale: 1.1, y: -5 }}
+          whileTap={{ scale: 0.9 }}
           onClick={() => setShowSettings(true)}
-          className="fixed right-6 bottom-6 z-[100] p-4 rounded-full glass-adaptive text-primary-500 shadow-2xl border-primary-500/20 hover:scale-110 transition-transform"
+          className="fixed right-6 bottom-6 z-[100] p-4 rounded-full glass-adaptive text-primary-500 shadow-2xl shadow-primary-500/20 border-primary-500/20 flex items-center justify-center group"
         >
           <SettingsIcon className="animate-spin-slow" size={24} />
-        </button>
+          {/* Tooltip */}
+          <span className="absolute right-full mr-4 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+            Theme Settings
+          </span>
+          {/* Pulse effect */}
+          <span className="absolute inset-0 rounded-full bg-primary-500 opacity-0 group-hover:animate-ping group-hover:opacity-20 transition-opacity -z-10" />
+        </motion.button>
 
         <AnimatePresence>
           {showSettings && (
@@ -69,8 +77,8 @@ function AppContent() {
           <Hero />
 
           {/* About Section (Inline for brevity) */}
-          <section id="about" className="py-24 max-w-7xl mx-auto px-6">
-            <div className="grid md:grid-cols-2 gap-16 items-center">
+          <section id="about" className="py-12 md:py-24 max-w-7xl mx-auto px-6">
+            <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
               <div className="relative">
                 <div className="w-full aspect-square rounded-3xl overflow-hidden glass p-4">
                   <div className="w-full h-full bg-gradient-to-br from-primary-600 to-cyan-600 rounded-2xl flex items-center justify-center text-8xl">

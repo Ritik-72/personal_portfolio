@@ -22,7 +22,7 @@ export const WhatsAppButton = () => {
         Chat on WhatsApp
       </span>
       {/* Pulse effect */}
-      <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-20 -z-10" />
+      <span className="absolute inset-0 rounded-full bg-[#25D366] opacity-0 group-hover:animate-ping group-hover:opacity-20 transition-opacity -z-10" />
     </motion.a>
   );
 };

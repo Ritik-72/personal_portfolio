@@ -59,13 +59,13 @@ const cardVariants = {
 
 export const Skills = () => {
   return (
-    <section id="skills" className="py-24 relative scroll-mt-24 overflow-hidden">
+    <section id="skills" className="py-12 md:py-24 relative scroll-mt-24 overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="text-center mb-20">
+        <div className="text-center mb-12 md:mb-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

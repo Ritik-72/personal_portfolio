@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Bot, User, Sparkles, Brain, Briefcase, Rocket } from 'lucide-react';
 import { cn } from '../utils/cn';
+import { API_BASE } from '../config/api';
 
 interface Message {
   role: 'user' | 'bot';
@@ -104,7 +105,7 @@ export const AIChatPanel = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/ai/chat', {
+      const response = await fetch(`${API_BASE}/ai/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMessage, mode })
@@ -131,22 +132,30 @@ export const AIChatPanel = () => {
     <>
       {/* Floating Toggle Button */}
       <motion.button
-        whileHover={{ scale: 1.1 }}
+        whileHover={{ scale: 1.1, y: -5 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "fixed bottom-6 right-24 z-[100] p-4 rounded-full shadow-2xl border transition-all duration-300",
+          "fixed bottom-6 right-24 z-[100] p-4 rounded-full shadow-2xl border transition-all duration-300 flex items-center justify-center group",
           isOpen
-            ? "bg-rose-500 border-rose-500/20 text-white"
-            : "glass-adaptive border-primary-500/20 text-primary-500"
+            ? "bg-rose-500 border-rose-500/20 text-white shadow-rose-500/20"
+            : "glass-adaptive border-primary-500/20 text-primary-500 shadow-primary-500/20"
         )}
       >
         {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
         {!isOpen && (
-          <span className="absolute -top-1 -right-1 flex h-4 w-4">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-4 w-4 bg-primary-500"></span>
-          </span>
+          <>
+            <span className="absolute -top-1 -right-1 flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-primary-500"></span>
+            </span>
+            {/* Tooltip */}
+            <span className="absolute right-full mr-4 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+              AI Chat
+            </span>
+            {/* Pulse effect */}
+            <span className="absolute inset-0 rounded-full bg-primary-500 opacity-0 group-hover:animate-ping group-hover:opacity-20 transition-opacity -z-10" />
+          </>
         )}
       </motion.button>
 
