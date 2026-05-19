@@ -5,6 +5,8 @@ from typing import List, Optional
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
+import urllib.request
+import json
 
 # Load environment variables
 load_dotenv()
@@ -72,40 +74,41 @@ Guidelines:
 async def root():
     return {"message": "Welcome to the Portfolio Backend API"}
 
-# Background task to send data to Google Sheets Webhook
-async def save_to_google_sheets(form: ContactForm):
-    webhook_url = os.getenv("GOOGLE_SHEET_WEBHOOK_URL")
-    if not webhook_url:
-        print("Warning: GOOGLE_SHEET_WEBHOOK_URL not set in environment variables.")
+async def save_to_google_sheet(form: ContactForm):
+    script_url = os.getenv("GOOGLE_SCRIPT_URL")
+    if not script_url:
+        print("GOOGLE_SCRIPT_URL not configured. Skipping Google Sheets integration.")
         return
         
-    data = {
-        "name": form.name,
-        "email": form.email,
-        "subject": form.subject,
-        "message": form.message
-    }
-    
-    import urllib.request
-    import json
-    
-    req = urllib.request.Request(webhook_url, method="POST")
-    req.add_header('Content-Type', 'application/json')
-    jsondata = json.dumps(data).encode('utf-8')
-    
     try:
-        urllib.request.urlopen(req, jsondata)
-        print("Successfully saved message to Google Sheets.")
+        data = json.dumps({
+            "name": form.name,
+            "email": form.email,
+            "subject": form.subject,
+            "message": form.message
+        }).encode("utf-8")
+        
+        req = urllib.request.Request(
+            script_url, 
+            data=data, 
+            headers={'Content-Type': 'application/json'},
+            method='POST'
+        )
+        with urllib.request.urlopen(req) as response:
+            if response.status == 200:
+                print("Successfully saved to Google Sheet")
+            else:
+                print(f"Failed to save to Google Sheet. Status: {response.status}")
     except Exception as e:
-        print(f"Error saving to Google Sheets: {e}")
+        print(f"Google Sheet save error: {e}")
 
 @app.post("/contact")
 async def contact_me(form: ContactForm, background_tasks: BackgroundTasks):
-    # Log the contact request locally
+    # Log the contact request
     print(f"Received message from {form.name} ({form.email}): {form.subject}")
     
-    # Run the Google Sheets saving function in the background
-    background_tasks.add_task(save_to_google_sheets, form)
+    # Save to Google Sheets in the background
+    background_tasks.add_task(save_to_google_sheet, form)
     
     return {"status": "success", "message": "Thank you! Your message has been received."}
 
