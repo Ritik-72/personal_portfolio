@@ -61,8 +61,8 @@ export const Skills = () => {
   return (
     <section id="skills" className="py-12 md:py-24 relative scroll-mt-24 overflow-hidden">
       {/* Decorative background elements */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow will-change-transform" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow will-change-transform" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center mb-12 md:mb-20">
@@ -152,8 +152,8 @@ export const Skills = () => {
             transition={{ delay: 0.3 }}
             className="lg:col-span-5 flex items-center justify-center relative bg-white/5 dark:bg-black/10 border border-white/5 rounded-[2.5rem] p-6 backdrop-blur-md shadow-2xl overflow-hidden min-h-[450px]"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -z-10 animate-pulse" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary-500/10 rounded-full blur-3xl -z-10 animate-pulse" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -z-10 animate-pulse will-change-transform" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary-500/10 rounded-full blur-3xl -z-10 animate-pulse will-change-transform" />
             
             <div className="absolute top-4 left-6 flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-primary-400 font-bold font-outfit z-10 bg-primary-500/10 border border-primary-500/20 px-2.5 py-1 rounded-full">
               <Sparkles size={10} className="animate-spin-slow text-primary-400" /> 3D Skill Core

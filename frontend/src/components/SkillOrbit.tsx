@@ -235,10 +235,10 @@ export const SkillOrbit = () => {
         </motion.div>
 
         {/* Tactical Ambient Glows */}
-        <div className="absolute w-[200px] h-[200px] bg-primary-500/5 rounded-full blur-[90px] -z-10 animate-pulse-slow" />
+        <div className="absolute w-[200px] h-[200px] bg-primary-500/5 rounded-full blur-[90px] -z-10 animate-pulse-slow will-change-transform" />
         {activeSkill && (
           <div 
-            className="absolute w-[240px] h-[240px] rounded-full blur-[100px] -z-10 transition-all duration-500"
+            className="absolute w-[240px] h-[240px] rounded-full blur-[100px] -z-10 transition-all duration-500 will-change-transform"
             style={{ backgroundColor: skillDetails[activeSkill].glowColor }}
           />
         )}

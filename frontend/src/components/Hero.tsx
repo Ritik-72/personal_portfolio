@@ -67,7 +67,7 @@ export const Hero = () => {
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 scroll-mt-24">
       {/* Background Particles */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 will-change-transform">
         {init && (
           <Particles
             id="tsparticles"
@@ -229,7 +229,7 @@ export const Hero = () => {
               >
                 {/* Breathing Ambient Glow behind image */}
                 <motion.div
-                  className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary-500/30 to-cyan-500/30 blur-2xl pointer-events-none"
+                  className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary-500/30 to-cyan-500/30 blur-2xl pointer-events-none will-change-transform"
                   style={{ z: -10 }}
                   animate={{
                     scale: [0.92, 1.08, 0.92],
@@ -393,18 +393,18 @@ export const Hero = () => {
             </div>
 
             {/* Animated Glow behind card */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary-500 to-cyan-500 rounded-[3rem] blur-2xl opacity-10 group-hover:opacity-30 transition-opacity -z-10" />
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary-500 to-cyan-500 rounded-[3rem] blur-2xl opacity-10 group-hover:opacity-30 transition-opacity -z-10 will-change-transform" />
           </Tilt>
 
           <motion.div
             animate={{ y: [0, -20, 0], rotate: [0, 10, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-10 -right-10 w-32 h-32 bg-primary-500/20 rounded-full blur-3xl"
+            className="absolute -top-10 -right-10 w-32 h-32 bg-primary-500/20 rounded-full blur-3xl will-change-transform"
           />
           <motion.div
             animate={{ y: [0, 20, 0], rotate: [0, -10, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-10 -left-10 w-32 h-32 bg-cyan-500/20 rounded-full blur-3xl"
+            className="absolute -bottom-10 -left-10 w-32 h-32 bg-cyan-500/20 rounded-full blur-3xl will-change-transform"
           />
         </motion.div>
       </div>
